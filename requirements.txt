@@ -1,2 +1,2 @@
-fastAPI
-uvicorn
+fastapi
+uvicorn[standard]
