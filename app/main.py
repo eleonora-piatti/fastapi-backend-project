@@ -16,6 +16,8 @@ def health():
         }
 
 
-# abbiamo utilizzato environment come variabile
-# se cambiamo env, l'app non si rompe
+# environment utilized as a variable
+# if env changes, app doesn't crash
+
+
 
