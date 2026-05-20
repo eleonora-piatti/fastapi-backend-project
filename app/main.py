@@ -8,7 +8,7 @@ from app.db.session import engine, get_db
 
 from sqlalchemy.orm import Session
 
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate, UserUpdate
 
 
 settings = get_settings()
@@ -38,11 +38,36 @@ def create_user(user:UserCreate, db:Session = Depends(get_db)):
     return user
 
 
-
 @app.get("/users")
 def get_users(db: Session = Depends(get_db)):
     users = db.query(User).all()
     return users
+
+
+@app.patch("/users/{user_id}")
+def update_user(user_id: int, user: UserUpdate, db:Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.id == user_id).first()
+
+    if not db_user:
+        return {"error":"User not found"}
+    
+    if user.email is not None:
+        db_user.email = user.email
+    
+    db.commit()
+    db.refresh(db_user)
+    
+    return db_user
+
+
+@app.delete("/users/{user_id}")
+def delete_user(user_id: int, db:Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.id == user_id).first()
+
+    if not db_user:
+        return {"error":"User not found"}
+
+    return {"message":"User deleted"}
 
 
 # Creates physical db table
