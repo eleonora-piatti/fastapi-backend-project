@@ -1,5 +1,13 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from app.core.config import get_settings
+
+from app.models.user import User
+
+from app.db.base import Base
+from app.db.session import engine, get_db
+
+from sqlalchemy.orm import Session
+
 
 settings = get_settings()
 
@@ -8,16 +16,28 @@ app = FastAPI(
     debug = settings.debug
 )
 
-@ app.get("/health")
+
+@app.get("/health")
 def health():
     return {
         "status" : "ok",
-        "environment" : settings.environment
+        "environment" : settings.environment  
         }
 
+@app.post("/users")
+def create_user(email:str, db: Session = Depends(get_db)):
+    user = User(email = email)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
 
-# environment utilized as a variable
-# if env changes, app doesn't crash
+@app.get("/users")
+def get_users(db: Session = Depends(get_db)):
+    users = db.query(User).all()
+    return users
 
 
+# Creates physical db table
+Base.metadata.create_all(bind=engine) 
 
