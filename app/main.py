@@ -8,6 +8,8 @@ from app.db.session import engine, get_db
 
 from sqlalchemy.orm import Session
 
+from app.schemas.user import UserCreate
+
 
 settings = get_settings()
 
@@ -24,13 +26,18 @@ def health():
         "environment" : settings.environment  
         }
 
+
 @app.post("/users")
-def create_user(email:str, db: Session = Depends(get_db)):
-    user = User(email = email)
-    db.add(user)
+def create_user(user:UserCreate, db:Session = Depends(get_db)): 
+    db_user = User(email = user.email)
+
+    db.add(db_user)
     db.commit()
-    db.refresh(user)
+    db.refresh(db_user)
+
     return user
+
+
 
 @app.get("/users")
 def get_users(db: Session = Depends(get_db)):
