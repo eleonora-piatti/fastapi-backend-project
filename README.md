@@ -11,13 +11,15 @@ The project focuses on clean architecture, data validation and proper database h
 
 ## Project Structure
 
+```
 app/
-    core/               # configuration
-    db/                 # database engine and session
-    models/             # ORM models
-    schemas/            # Pydantic schemas (validation layer)
-    routers/            # API routes
-    main.py             # application entry point
+├── core/       # Configuration
+├── db/         # Database engine and session
+├── models/     # ORM models
+├── schemas/    # Pydantic schemas (validation layer)
+├── routers/    # API routes
+└── main.py     # Application entry point
+```
 
 
 ## Features
@@ -30,19 +32,20 @@ app/
 
 
 ## Installation
-
+```
 bash
 git clone <repo-url>
 cd fastapi-backend-project
 python -m venv venv
 source venv/bin/activate # windows: venv\Scripts\activate
 pip install -r requirements.txt
-
+```
 
 ## Run the app
+```
 bash
 python -m uvicorn app.main:app --reload
-
+```
 
 ## Learning goals
 
