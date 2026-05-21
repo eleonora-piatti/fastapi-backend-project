@@ -11,7 +11,7 @@ The project focuses on clean architecture, data validation and proper database h
 
 ## Project Structure
 
-app/
+app/ /n
     core/               # configuration
     db/                 # database engine and session
     models/             # ORM models
