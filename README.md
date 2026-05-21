@@ -16,6 +16,7 @@ app/
     db/                 # database engine and session
     models/             # ORM models
     schemas/            # Pydantic schemas (validation layer)
+    routers/            # API routes
     main.py             # application entry point
 
 
