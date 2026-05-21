@@ -34,7 +34,7 @@ app/
 ## Installation
 ```
 bash
-git clone <repo-url>
+git clone <https://github.com/eleonora-piatti/fastapi-backend-project>
 cd fastapi-backend-project
 python -m venv venv
 source venv/bin/activate # windows: venv\Scripts\activate
