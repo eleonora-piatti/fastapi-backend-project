@@ -1,6 +1,6 @@
 ## FastAPI-backend-project
 Backend REST API built with FastAPI and SQLAlchemy, designed to manage users with full CRUD operations.
-The project focuses on clean architecture, data validation amd proper database handling using modern Python backend practices.
+The project focuses on clean architecture, data validation and proper database handling using modern Python backend practices.
 
 ## Tech stack
 - FastAPI
