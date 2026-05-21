@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from app.core.config import get_settings
 
 from app.models.user import User
@@ -8,7 +8,9 @@ from app.db.session import engine, get_db
 
 from sqlalchemy.orm import Session
 
-from app.schemas.user import UserCreate, UserUpdate
+from app.schemas.user import UserCreate, UserUpdate, UserResponse
+from sqlalchemy.exc import IntegrityError
+
 
 
 settings = get_settings()
@@ -27,15 +29,20 @@ def health():
         }
 
 
-@app.post("/users")
+@app.post("/users", response_model = UserResponse, status_code=201)
 def create_user(user:UserCreate, db:Session = Depends(get_db)): 
     db_user = User(email = user.email)
 
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
+    try:
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
 
-    return user
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=404, detail= "Email already exists")
+
+    return db_user
 
 
 @app.get("/users")
@@ -44,12 +51,24 @@ def get_users(db: Session = Depends(get_db)):
     return users
 
 
+
+@app.get("/users/{user_id}")
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail= "User not found")
+    
+    return user
+
+
+
 @app.patch("/users/{user_id}")
 def update_user(user_id: int, user: UserUpdate, db:Session = Depends(get_db)):
     db_user = db.query(User).filter(User.id == user_id).first()
 
     if not db_user:
-        return {"error":"User not found"}
+        raise HTTPException(status_code=404, detail= "User not found")
     
     if user.email is not None:
         db_user.email = user.email
@@ -65,7 +84,7 @@ def delete_user(user_id: int, db:Session = Depends(get_db)):
     db_user = db.query(User).filter(User.id == user_id).first()
 
     if not db_user:
-        return {"error":"User not found"}
+        raise HTTPException(status_code=404, detail= "User not found")
 
     return {"message":"User deleted"}
 
